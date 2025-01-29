@@ -7,8 +7,11 @@ import {
 } from "react-native";
 import colors from "../styles/colors";
 import defaultStyles from "../styles/defaultStyles";
+import { useState } from "react";
 
 export default function Index() {
+
+  const [selectedId, setSelectedId] = useState<string>("1")
 
   type dataType = {
     id: string; // Unique identifier
@@ -28,7 +31,8 @@ export default function Index() {
   I can access the values of item using dot notation 
   */
   const selectedList = (item: dataType) => {
-    console.log("Clicked" + item.title)
+    setSelectedId(item.id);
+    console.log("Clicked " + item.title)
   }
 
   return (
@@ -38,7 +42,22 @@ export default function Index() {
       </View>
       <View style={[defaultStyles.textContainer, { flex: 1 }]}>
         <View style={styles.flatlist}>
-          <Text>This is where our list will go</Text>
+          <FlatList
+            data = {DATA}
+            keyExtractor= {(item: dataType) => item.id}
+            renderItem={({item}) => (
+              <TouchableOpacity onPress={() => selectedList(item)}>
+                <View style = {[styles.titleContainer, 
+                  {
+                    backgroundColor: 
+                      item.id === selectedId ? colors.primary : colors.secondary
+                  }
+                ]}>
+                  <Text style = {styles.titleText}>{item.title}</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+          />
         </View>
       </View>
     </View>
@@ -54,6 +73,7 @@ const styles = StyleSheet.create({
     width: 300,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
+    backgroundColor: "lightblue"
   },
   titleText: {
     fontSize: 24,
