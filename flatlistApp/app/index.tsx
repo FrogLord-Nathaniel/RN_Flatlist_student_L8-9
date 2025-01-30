@@ -3,34 +3,23 @@ import {
   View,
   StyleSheet,
   FlatList,
-  TouchableOpacity,
 } from "react-native";
-import colors from "../styles/colors";
 import defaultStyles from "../styles/defaultStyles";
 import { useState } from "react";
+import ListItemSeparator from "@/components/ListItemSeparator";
+import ListItem from "@/components/ListItem";
+import { dataType, DATA } from "@/data/appData";
 
 export default function Index() {
 
   const [selectedId, setSelectedId] = useState<string>("1")
 
-  type dataType = {
-    id: string; // Unique identifier
-    title: string; // The text we see in the flatlist
-  }
-
-  const DATA: dataType[] = [
-    {id: '1', title: 'First'},
-    {id: '2', title: 'Second'},
-    {id: '3', title: 'Third'},
-    {id: '4', title: 'Fourth'}
-  ];
-
   /*
-  Declaring a function called selectedList that recieves
+  Declaring a function called handleRowPress that recieves
   a param of type dataType that we will refer to as 'item'
   I can access the values of item using dot notation 
   */
-  const selectedList = (item: dataType) => {
+  const handleRowPress = (item: dataType) => {
     setSelectedId(item.id);
     console.log("Clicked " + item.title)
   }
@@ -45,17 +34,15 @@ export default function Index() {
           <FlatList
             data = {DATA}
             keyExtractor= {(item: dataType) => item.id}
-            renderItem={({item}) => (
-              <TouchableOpacity onPress={() => selectedList(item)}>
-                <View style = {[styles.titleContainer, 
-                  {
-                    backgroundColor: 
-                      item.id === selectedId ? colors.primary : colors.secondary
-                  }
-                ]}>
-                  <Text style = {styles.titleText}>{item.title}</Text>
-                </View>
-              </TouchableOpacity>
+            ItemSeparatorComponent={() => (
+              <ListItemSeparator />
+            )}
+            renderItem={({ item }) => (
+              <ListItem
+                item={item}
+                isSelected = {item.id === selectedId}
+                onPress={handleRowPress}
+              />
             )}
           />
         </View>
@@ -67,16 +54,5 @@ export default function Index() {
 const styles = StyleSheet.create({
   flatlist: {
     alignItems: "center",
-  },
-  titleContainer: {
-    marginTop: 5,
-    width: 300,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    backgroundColor: "lightblue"
-  },
-  titleText: {
-    fontSize: 24,
-    padding: 10,
   },
 });
